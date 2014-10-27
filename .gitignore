@@ -30,3 +30,5 @@ Makefile*
 #QtCtreator Qml
 *.qmlproject.user
 *.qmlproject.user.*
+*.obj
+build-AndroidBluetoothLEDGrid-Android_GCC_4_9_Qt_5_3_2-Debug/android-libAndroidBluetoothLEDGrid.so-deployment-settings.json
