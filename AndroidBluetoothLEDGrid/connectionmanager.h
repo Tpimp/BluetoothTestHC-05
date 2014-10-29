@@ -2,9 +2,9 @@
 #define CONNECTIONMANAGER_H
 
 #include <QObject>
-#include <QtBluetooth/QBluetoothDeviceInfo>
-#include <QtBluetooth/QBluetoothSocket>
-#include <QtBluetooth/QBluetoothDeviceDiscoveryAgent>
+class QBluetoothDeviceInfo;
+class QBluetoothSocket;
+class QBluetoothDeviceDiscoveryAgent;
 
 class ConnectionManager : public QObject
 {
@@ -13,21 +13,25 @@ public:
     explicit ConnectionManager(QObject *parent = 0);
     ~ConnectionManager();
     bool isConnected();
+
 signals:
     void deviceConnected(QString device_name);
     void deviceDisconnected();
     void foundDevice(QString dname, QString dmac, QString dservice);
+
 public slots:
     void scanForDevices(QString filter_type);
     void stopScanning();
     void sendMessage(QByteArray message);
     void connectToDevice(QString pin);
 
+protected:
+    void deviceDiscovered(QBluetoothDeviceInfo);
 
 private:
 
     QBluetoothDeviceInfo*                mTargetDevice;
-    QBluetoothSocket*                     mTargetSocket;
+    QBluetoothSocket*                    mTargetSocket;
     QBluetoothDeviceDiscoveryAgent*      mDeviceDiscover;
 
 };

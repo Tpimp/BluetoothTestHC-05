@@ -15,6 +15,7 @@ typedef  struct FOTON_RGB
     FOTON_COLOR Blue;
 }FOTON_RGB;
 
+#define FOTON_START     '#'
 #define FOTON_TERMINAL  '$'
 
 typedef struct FOTON_LINE
@@ -39,9 +40,9 @@ class FotonLEDMessageFactory
 {
 public:
     explicit FotonLEDMessageFactory();
-    void     createLEDSet(int led_num, FOTON_RGB LED_COLOR, QByteArray& buffer);
-    QString  createLEDClear(int led_num,QByteArray& buffer);
-    QString  createDrawLine(FOTON_LINE line, FOTON_RGB color,QByteArray& buffer);
+    void  createLEDSet(int led_num, FOTON_RGB LED_COLOR, QByteArray& buffer);
+    void  createLEDClear(int led_num,QByteArray& buffer);
+    void  createDrawLine(FOTON_LINE line, FOTON_RGB color,QByteArray& buffer);
 
 };
 

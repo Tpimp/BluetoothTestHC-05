@@ -11,12 +11,10 @@ void FotonLEDMessageFactory::createLEDSet(int led_num, FOTON_RGB LED_COLOR, QByt
 
 }
 
-QString  FotonLEDMessageFactory::createLEDClear(int led_num,QByteArray& buffer)
+void  FotonLEDMessageFactory::createLEDClear(int led_num,QByteArray& buffer)
 {
-    return QString();
 }
 
-QString  FotonLEDMessageFactory::createDrawLine(FOTON_LINE line, FOTON_RGB color,QByteArray& buffer)
+void  FotonLEDMessageFactory::createDrawLine(FOTON_LINE line, FOTON_RGB color,QByteArray& buffer)
 {
-    return QString();
 }
