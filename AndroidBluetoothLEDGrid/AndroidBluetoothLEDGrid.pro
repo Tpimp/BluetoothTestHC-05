@@ -4,7 +4,8 @@ QT += qml quick bluetooth
 
 SOURCES += main.cpp \
     connectionmanager.cpp \
-    fotonledmessagefactory.cpp
+    fotonledmessagefactory.cpp \
+    ledboardmanager.cpp
 
 RESOURCES += qml.qrc
 
@@ -16,6 +17,7 @@ include(deployment.pri)
 
 HEADERS += \
     connectionmanager.h \
-    fotonledmessagefactory.h
+    fotonledmessagefactory.h \
+    ledboardmanager.h
 
 CONFIG += C++11
