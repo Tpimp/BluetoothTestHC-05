@@ -2,10 +2,10 @@
 #define CONNECTIONMANAGER_H
 
 #include <QObject>
-class QBluetoothDeviceInfo;
+#include <QBluetoothDeviceInfo>
+#include <QStringList>
 class QBluetoothSocket;
 class QBluetoothDeviceDiscoveryAgent;
-
 class ConnectionManager : public QObject
 {
     Q_OBJECT
@@ -17,17 +17,17 @@ public:
 signals:
     void deviceConnected(QString device_name);
     void deviceDisconnected();
-    void foundDevice(QString dname, QString dmac, QString dservice);
+    void foundDevice(QString dname, QString dmac, QStringList dservice);
 
 public slots:
     void scanForDevices(QString filter_type);
     void stopScanning();
     void sendMessage(QByteArray message);
-    void connectToDevice(QString pin);
+    void connectToDevice(QString device_name, QString addr, QString pin);
 
 protected:
-    void deviceDiscovered(QBluetoothDeviceInfo);
-
+    void deviceDiscovered(QBluetoothDeviceInfo info);
+    QStringList serviceEnumToStrList(QBluetoothDeviceInfo::ServiceClasses service);
 private:
 
     QBluetoothDeviceInfo*                mTargetDevice;

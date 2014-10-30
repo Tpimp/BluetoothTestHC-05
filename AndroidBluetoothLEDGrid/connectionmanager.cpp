@@ -1,8 +1,7 @@
 #include "connectionmanager.h"
-#include <QtBluetooth/QBluetoothDeviceInfo>
 #include <QtBluetooth/QBluetoothSocket>
 #include <QtBluetooth/QBluetoothDeviceDiscoveryAgent>
-
+#include <QtBluetooth/QBluetoothLocalDevice>
 ConnectionManager::ConnectionManager(QObject *parent) :
     QObject(parent),
     mTargetSocket(new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol,this) ),
@@ -12,15 +11,27 @@ ConnectionManager::ConnectionManager(QObject *parent) :
 
 }
 
-void ConnectionManager::connectToDevice(QString pin)
+void ConnectionManager::connectToDevice(QString device_name, QString addr, QString pin)
 {
+    if(mTargetSocket)
+    {
+        mTargetSocket->close();
+    }
+    // Build Device Class Descriptor
+    quint32 device_class(4);             // Bluetooth Rendering Service
+    device_class = (device_class << 11);
+    device_class |= (8 << 5);            // Toy Device (CLASS MAJOR)
+    device_class |= (4 << 2);            // Toy Controller (CLASS MINOR)
 
+    *mTargetDevice = QBluetoothDeviceInfo(QBluetoothAddress(addr),device_name,device_class );
+    mTargetSocket->connectToService(mTargetDevice->address(),mTargetSocket->localPort());
 
 }
 
-void ConnectionManager::deviceDiscovered(QBluetoothDeviceInfo)
+void ConnectionManager::deviceDiscovered(QBluetoothDeviceInfo info)
 {
-
+    emit foundDevice(info.name(),info.address().toString(),
+                     serviceEnumToStrList(info.serviceClasses()));
 
 }
 
@@ -84,4 +95,41 @@ bool ConnectionManager::isConnected()
         return false;
 
     return mTargetSocket->isOpen();
+}
+
+
+QStringList ConnectionManager::serviceEnumToStrList(QBluetoothDeviceInfo::ServiceClasses service)
+{
+    QStringList services;
+    // Double guard statement
+    if(service & QBluetoothDeviceInfo::NoService)
+    {
+        return services;
+    }
+    if(service & QBluetoothDeviceInfo::AllServices)
+    {
+        services.append("Positioning");
+        services.append("Networking");
+        services.append("Rendering");
+        services.append("Capturing");
+        services.append("Object Transfer");
+        services.append("Telephony");
+        services.append("Information");
+        return services;
+    }
+    if(service & QBluetoothDeviceInfo::PositioningService)
+        services.append("Positioning");
+    if(service & QBluetoothDeviceInfo::NetworkingService)
+        services.append("Networking");
+    if(service & QBluetoothDeviceInfo::RenderingService)
+        services.append("Rendering");
+    if(service & QBluetoothDeviceInfo::CapturingService)
+        services.append("Capturing");
+    if(service & QBluetoothDeviceInfo::ObjectTransferService)
+        services.append("Object Transfer");
+    if(service & QBluetoothDeviceInfo::TelephonyService)
+        services.append("Telephony");
+    if(service & QBluetoothDeviceInfo::InformationService)
+        services.append("Information");
+    return services;
 }
