@@ -14,14 +14,20 @@ public:
 
 signals:
     void foundLedBoard(QString dname, QString dmac);
-
+    void connectedToLedBoard(QString name);
+    void finishedScanning();
 public slots:
+
     void findLedBoard();
     void connectToBoard(QString name, QString address);
     void sendLedSet(int row, int col, QColor color);
+    void requestDevicePair(QString name, QString address);
 
 private slots:
     void foundDevice(QString dname, QString dmac, QStringList dservice);
+    void deviceConnected(QString name);
+    void devicePaired(QString name, QString address);
+
 
 
 private:

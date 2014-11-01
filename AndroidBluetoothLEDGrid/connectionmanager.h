@@ -18,14 +18,15 @@ signals:
     void deviceConnected(QString device_name);
     void deviceDisconnected();
     void foundDevice(QString dname, QString dmac, QStringList dservice);
-
+    void finishedScanning();
 public slots:
     void scanForDevices(QString filter_type);
     void stopScanning();
     void sendMessage(QByteArray message);
-    void connectToDevice(QString device_name, QString addr, QString pin);
+    void connectToDevice(QString device_name, QString addr, QString pin = "");
 
 protected:
+    void connectToDeviceDiscover();
     void deviceDiscovered(QBluetoothDeviceInfo info);
     QStringList serviceEnumToStrList(QBluetoothDeviceInfo::ServiceClasses service);
 private:

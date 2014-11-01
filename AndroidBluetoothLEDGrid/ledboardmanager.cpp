@@ -1,15 +1,20 @@
 #include "ledboardmanager.h"
-
+#include <QDebug>
 LedBoardManager::LedBoardManager(QObject *parent) :
     QObject(parent)
 {
+    connect(&mLedBoardConnection, &ConnectionManager::foundDevice,
+            this, &LedBoardManager::foundDevice);
+    connect(&mLedBoardConnection, &ConnectionManager::finishedScanning,
+            this, &LedBoardManager::finishedScanning);
 }
 
 
 void LedBoardManager::connectToBoard(QString name, QString address)
 {
-    mLedBoardConnection.connectToDevice(name,address,"1234");
+    mLedBoardConnection.connectToDevice(name,address);
 }
+
 
 void LedBoardManager::findLedBoard()
 {
@@ -18,9 +23,32 @@ void LedBoardManager::findLedBoard()
 
 void LedBoardManager::foundDevice(QString dname, QString dmac, QStringList dservice)
 {
+    qDebug() << "Found " << dname << " With services " << dservice << " at MAC " << dmac;
     if(dname.contains("LedBoard"))
-        foundLedBoard(dname,dmac);
+    {
+        emit foundLedBoard(dname,dmac);
+    }
+
 }
+
+void LedBoardManager::deviceConnected(QString name)
+{
+    emit connectedToLedBoard(name);
+}
+
+
+void LedBoardManager::devicePaired(QString name, QString address)
+{
+
+}
+
+
+void LedBoardManager::requestDevicePair(QString name, QString address)
+{
+
+}
+
+
 
 void LedBoardManager::sendLedSet(int row, int col, QColor color)
 {

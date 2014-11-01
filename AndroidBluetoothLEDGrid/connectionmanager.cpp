@@ -4,10 +4,10 @@
 #include <QtBluetooth/QBluetoothLocalDevice>
 ConnectionManager::ConnectionManager(QObject *parent) :
     QObject(parent),
+    mDeviceDiscover(nullptr),
     mTargetSocket(new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol,this) ),
     mTargetDevice(new QBluetoothDeviceInfo())
 {
-
 
 }
 
@@ -20,9 +20,9 @@ void ConnectionManager::connectToDevice(QString device_name, QString addr, QStri
     // Build Device Class Descriptor
     quint32 device_class(4);             // Bluetooth Rendering Service
     device_class = (device_class << 11);
-    device_class |= (8 << 5);            // Toy Device (CLASS MAJOR)
+    device_class |= (6 << 5);            // Toy Device (CLASS MAJOR)
     device_class |= (4 << 2);            // Toy Controller (CLASS MINOR)
-
+    // 00000000 00000000 10001000 00001000
     *mTargetDevice = QBluetoothDeviceInfo(QBluetoothAddress(addr),device_name,device_class );
     mTargetSocket->connectToService(mTargetDevice->address(),mTargetSocket->localPort());
 
@@ -30,23 +30,36 @@ void ConnectionManager::connectToDevice(QString device_name, QString addr, QStri
 
 void ConnectionManager::deviceDiscovered(QBluetoothDeviceInfo info)
 {
+    qDebug() << "discovered " << info.name() << " addr " << info.address().toString();
     emit foundDevice(info.name(),info.address().toString(),
                      serviceEnumToStrList(info.serviceClasses()));
 
 }
 
+
+void ConnectionManager::connectToDeviceDiscover()
+{
+    if(mDeviceDiscover)
+    {
+        connect(mDeviceDiscover,&QBluetoothDeviceDiscoveryAgent::deviceDiscovered,
+                this, &ConnectionManager::deviceDiscovered);
+        connect(mDeviceDiscover, &QBluetoothDeviceDiscoveryAgent::finished,
+                this,&ConnectionManager::stopScanning);
+    }
+}
+
 void ConnectionManager::scanForDevices(QString filter_type)
 {
     if(!mDeviceDiscover)
+    {
         mDeviceDiscover = new QBluetoothDeviceDiscoveryAgent(this);
+        connectToDeviceDiscover();
+    }
     else
     {
         mDeviceDiscover->stop();
     }
-    connect(this, &ConnectionManager::deviceDiscovered,
-            mDeviceDiscover,&QBluetoothDeviceDiscoveryAgent::deviceDiscovered);
-    connect(mDeviceDiscover, &QBluetoothDeviceDiscoveryAgent::finished,
-            this,&ConnectionManager::stopScanning);
+
     mDeviceDiscover->setInquiryType(QBluetoothDeviceDiscoveryAgent::GeneralUnlimitedInquiry);
     mDeviceDiscover->start();
 }
@@ -55,7 +68,8 @@ void ConnectionManager::stopScanning()
 {
     if(mDeviceDiscover)
     {
-        mDeviceDiscover->stop();
+        emit finishedScanning();
+       // mDeviceDiscover->stop();
         mDeviceDiscover->deleteLater();
         mDeviceDiscover = nullptr;
     }

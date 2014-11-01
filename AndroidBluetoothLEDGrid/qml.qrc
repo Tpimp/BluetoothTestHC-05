@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>FindDeviceMenu.qml</file>
+        <file>LedBoardView.qml</file>
     </qresource>
 </RCC>

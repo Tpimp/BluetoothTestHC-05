@@ -9,7 +9,7 @@ FotonLEDMessageFactory::FotonLEDMessageFactory()
 {
 }
 
-// Fills the buffer with a 7 bit encoded LED Set Command
+// Fills the buffer with a 7 byte encoded LED Set Command
 void FotonLEDMessageFactory::createLEDSet(int ROW, int COL, FOTON_COLOR RED,
                                           FOTON_COLOR GREEN,FOTON_COLOR BLUE,QByteArray& buffer)
 {
@@ -32,8 +32,10 @@ void FotonLEDMessageFactory::createLEDSet(int ROW, int COL, FOTON_COLOR RED,
 
 void  FotonLEDMessageFactory::createLEDClear(int led_num,QByteArray& buffer)
 {
+
 }
 
 void  FotonLEDMessageFactory::createDrawLine(FOTON_LINE line, FOTON_RGB color,QByteArray& buffer)
 {
+
 }
