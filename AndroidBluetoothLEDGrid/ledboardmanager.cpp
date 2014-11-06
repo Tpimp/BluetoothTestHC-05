@@ -7,6 +7,8 @@ LedBoardManager::LedBoardManager(QObject *parent) :
             this, &LedBoardManager::foundDevice);
     connect(&mLedBoardConnection, &ConnectionManager::finishedScanning,
             this, &LedBoardManager::finishedScanning);
+    connect(&mLedBoardConnection, &ConnectionManager::deviceConnected,
+            this, &LedBoardManager::connectedToLedBoard);
 }
 
 
@@ -23,7 +25,7 @@ void LedBoardManager::findLedBoard()
 
 void LedBoardManager::foundDevice(QString dname, QString dmac, QStringList dservice)
 {
-    qDebug() << "Found " << dname << " With services " << dservice << " at MAC " << dmac;
+    //qDebug() << "Found " << dname << " With services " << dservice << " at MAC " << dmac;
     if(dname.contains("LedBoard"))
     {
         emit foundLedBoard(dname,dmac);
@@ -31,10 +33,6 @@ void LedBoardManager::foundDevice(QString dname, QString dmac, QStringList dserv
 
 }
 
-void LedBoardManager::deviceConnected(QString name)
-{
-    emit connectedToLedBoard(name);
-}
 
 
 void LedBoardManager::devicePaired(QString name, QString address)
@@ -54,5 +52,6 @@ void LedBoardManager::sendLedSet(int row, int col, QColor color)
 {
     QByteArray message;
     mMessageFactory.createLEDSet(row,col, color.red(),color.green(),color.blue(), message);
+    //qDebug() << "sending LedSet" << message;
     mLedBoardConnection.sendMessage(message);
 }

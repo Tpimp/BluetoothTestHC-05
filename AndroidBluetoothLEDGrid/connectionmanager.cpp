@@ -2,13 +2,15 @@
 #include <QtBluetooth/QBluetoothSocket>
 #include <QtBluetooth/QBluetoothDeviceDiscoveryAgent>
 #include <QtBluetooth/QBluetoothLocalDevice>
+#include <QtBluetooth/QBluetoothUuid>
+
 ConnectionManager::ConnectionManager(QObject *parent) :
     QObject(parent),
     mDeviceDiscover(nullptr),
     mTargetSocket(new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol,this) ),
     mTargetDevice(new QBluetoothDeviceInfo())
 {
-
+    connectToTargetSocket();
 }
 
 void ConnectionManager::connectToDevice(QString device_name, QString addr, QString pin)
@@ -24,7 +26,7 @@ void ConnectionManager::connectToDevice(QString device_name, QString addr, QStri
     device_class |= (4 << 2);            // Toy Controller (CLASS MINOR)
     // 00000000 00000000 10001000 00001000
     *mTargetDevice = QBluetoothDeviceInfo(QBluetoothAddress(addr),device_name,device_class );
-    mTargetSocket->connectToService(mTargetDevice->address(),mTargetSocket->localPort());
+    mTargetSocket->connectToService(mTargetDevice->address(), QBluetoothUuid(QBluetoothUuid::Rfcomm));
 
 }
 
@@ -45,6 +47,15 @@ void ConnectionManager::connectToDeviceDiscover()
                 this, &ConnectionManager::deviceDiscovered);
         connect(mDeviceDiscover, &QBluetoothDeviceDiscoveryAgent::finished,
                 this,&ConnectionManager::stopScanning);
+    }
+}
+
+void ConnectionManager::connectToTargetSocket()
+{
+    if(mTargetSocket)
+    {
+        connect(mTargetSocket, &QBluetoothSocket::connected,
+                this, &ConnectionManager::deviceConnected);
     }
 }
 

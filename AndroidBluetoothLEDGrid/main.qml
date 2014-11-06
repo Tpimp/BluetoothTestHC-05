@@ -14,4 +14,9 @@ Window
     FindDeviceMenu{
         anchors.fill: parent
     }
+    LedBoardView{
+        id:boardView
+        anchors.fill: parent
+        visible: false
+    }
 }

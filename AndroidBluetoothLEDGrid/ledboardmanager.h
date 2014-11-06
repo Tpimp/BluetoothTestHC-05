@@ -14,7 +14,7 @@ public:
 
 signals:
     void foundLedBoard(QString dname, QString dmac);
-    void connectedToLedBoard(QString name);
+    void connectedToLedBoard();
     void finishedScanning();
 public slots:
 
@@ -25,7 +25,7 @@ public slots:
 
 private slots:
     void foundDevice(QString dname, QString dmac, QStringList dservice);
-    void deviceConnected(QString name);
+
     void devicePaired(QString name, QString address);
 
 

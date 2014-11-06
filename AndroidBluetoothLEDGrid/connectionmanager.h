@@ -15,7 +15,7 @@ public:
     bool isConnected();
 
 signals:
-    void deviceConnected(QString device_name);
+    void deviceConnected();
     void deviceDisconnected();
     void foundDevice(QString dname, QString dmac, QStringList dservice);
     void finishedScanning();
@@ -27,6 +27,7 @@ public slots:
 
 protected:
     void connectToDeviceDiscover();
+    void connectToTargetSocket();
     void deviceDiscovered(QBluetoothDeviceInfo info);
     QStringList serviceEnumToStrList(QBluetoothDeviceInfo::ServiceClasses service);
 private:

@@ -26,7 +26,12 @@ Rectangle {
         }
         onFinishedScanning:{
            busy.running = false;
-            console.log("Finished scanning");
+           console.log("Finished scanning");
+        }
+        onConnectedToLedBoard:{
+            console.log("Connected to " + deviceID);
+            topRect.visible = false;
+            boardView.visible = true;
         }
     }
 
@@ -66,6 +71,7 @@ Rectangle {
                         deviceID = deviceName;
                     }
                 }
+
                 property alias deviceId: bttext.text
 
                 Text {
@@ -92,6 +98,32 @@ Rectangle {
                     color:"white"
                     font.pixelSize: 80
 
+                }
+                Rectangle{
+                    id:connectButton
+                    visible: (index == deviceList.currentIndex)
+                    height: parent.height/4
+                    width: parent.width/4
+                    anchors.bottom: parent.bottom
+                    anchors.right: parent.right
+                    color: "green"
+                    border.color: "white"
+                    border.width: 2
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            LedBoardManager.connectToBoard(deviceName,deviceAddress);
+                        }
+                    }
+                    Text {
+                        id: connectText
+                        anchors.fill: parent
+                        text: "Connect"
+                        horizontalAlignment: Text.AlignHCenter
+                        color:"yellow"
+                        font.pixelSize: height * .7
+
+                    }
                 }
             }
         }
@@ -121,7 +153,7 @@ Rectangle {
         Text{
             anchors.fill: parent
             color: button.enabled ? "yellow":"black"
-            text: "Search for Devices"
+            text: deviceID == "" ? "Search for Devices" :("Connect To " +deviceID)
             font.pixelSize: height *.4
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
